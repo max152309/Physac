@@ -303,7 +303,7 @@ static unsigned int physicsManifoldsCount = 0;              // Physics world cur
 //----------------------------------------------------------------------------------
 static int FindAvailableBodyIndex();                                                                        // Finds a valid index for a new physics body initialization
 static PolygonData CreateRandomPolygon(float radius, int sides);                                            // Creates a random polygon shape with max vertex distance from polygon pivot
-static PolygonData CreateRectanglePolygon(Vector2 pos, Vector2 size);                                       // Creates a rectangle polygon shape based on a min and max positions
+static PolygonData CreateRectanglePolygon(Vector2 size);                                                    // Creates a rectangle polygon shape based on a min and max positions
 static void *PhysicsLoop(void *arg);                                                                        // Physics loop thread function
 static void PhysicsStep(void);                                                                              // Physics steps calculations (dynamics, collisions and position corrections)
 static int FindAvailableManifoldIndex();                                                                    // Finds a valid index for a new manifold initialization
@@ -455,7 +455,7 @@ PHYSACDEF PhysicsBody CreatePhysicsBodyRectangle(Vector2 pos, float width, float
         newBody->shape.body = newBody;
         newBody->shape.radius = 0.0f;
         newBody->shape.transform = Mat2Radians(0.0f);
-        newBody->shape.vertexData = CreateRectanglePolygon(pos, (Vector2){ width, height });
+        newBody->shape.vertexData = CreateRectanglePolygon((Vector2){ width, height });
 
         // Calculate centroid and moment of inertia
         Vector2 center = { 0.0f, 0.0f };
@@ -1021,16 +1021,16 @@ static PolygonData CreateRandomPolygon(float radius, int sides)
 }
 
 // Creates a rectangle polygon shape based on a min and max positions
-static PolygonData CreateRectanglePolygon(Vector2 pos, Vector2 size)
+static PolygonData CreateRectanglePolygon(Vector2 size)
 {
     PolygonData data = { 0 };
     data.vertexCount = 4;
 
     // Calculate polygon vertices positions
-    data.positions[0] = (Vector2){ pos.x + size.x/2, pos.y - size.y/2 };
-    data.positions[1] = (Vector2){ pos.x + size.x/2, pos.y + size.y/2 };
-    data.positions[2] = (Vector2){ pos.x - size.x/2, pos.y + size.y/2 };
-    data.positions[3] = (Vector2){ pos.x - size.x/2, pos.y - size.y/2 };
+    data.positions[0] = (Vector2){  size.x/2, -size.y/2 };
+    data.positions[1] = (Vector2){  size.x/2,  size.y/2 };
+    data.positions[2] = (Vector2){ -size.x/2,  size.y/2 };
+    data.positions[3] = (Vector2){ -size.x/2, -size.y/2 };
 
     // Calculate polygon faces normals
     for (int i = 0; i < data.vertexCount; i++)
